@@ -1,0 +1,236 @@
+// Production Postgres schema. All pages + API routes use this via Prisma.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum FieldStatus {
+  confirmed
+  unknown
+  not_remembered
+  not_provided
+  not_recorded
+  not_applicable
+  pending_verification
+  other
+}
+
+model Patient {
+  id               String   @id
+  fullName         String
+  dob              String   @default("")
+  age              Int      @default(0)
+  gender           String   @default("")
+  genderStatus     FieldStatus @default(unknown)
+  phone            String   @default("")
+  address          String   @default("")
+  emergencyContact String   @default("")
+  bloodGroup       String   @default("")
+  bloodGroupStatus FieldStatus @default(unknown)
+  allergiesNote    String   @default("")
+  existingConditions String @default("")
+  familyHistoryNote String  @default("")
+  lifestyleRisks   String   @default("")
+  consent          Boolean  @default(false)
+  consentDate      String   @default("")
+  createdBy        String
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  conditions   Condition[]
+  medications  Medication[]
+  encounters   Encounter[]
+  investigations Investigation[]
+  surgeries    Surgery[]
+  allergies    Allergy[]
+  familyHistory FamilyHistory[]
+  preventive   Preventive[]
+  audits       AuditLog[]
+}
+
+model Condition {
+  id String @id @default(cuid())
+  patientId String
+  patient Patient @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  name String
+  icdHint String @default("")
+  onsetDate String @default("")
+  onsetStatus FieldStatus @default(unknown)
+  diagnosedDate String @default("")
+  symptoms String @default("")
+  cause String @default("")
+  causeStatus FieldStatus @default(unknown)
+  examFindings String @default("")
+  provisionalDx String @default("")
+  confirmedDx String @default("")
+  differentials String @default("")
+  severity String @default("")
+  status String @default("active")
+  complications String @default("")
+  treatmentPlan String @default("")
+  response String @default("")
+  notes String @default("")
+  createdBy String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Medication {
+  id String @id @default(cuid())
+  patientId String
+  patient Patient @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  medicineName String
+  genericName String @default("")
+  dosage String @default("")
+  frequency String @default("")
+  route String @default("")
+  duration String @default("")
+  reason String @default("")
+  relatedDiagnosis String @default("")
+  medStatus String @default("current")
+  changeReason String @default("")
+  startDate String @default("")
+  endDate String @default("")
+  endStatus FieldStatus @default(confirmed)
+  prescribedBy String @default("")
+  prescriptionDate String @default("")
+  sideEffects String @default("")
+  effectiveness String @default("")
+  adherence String @default("")
+  createdBy String
+  createdAt DateTime @default(now())
+}
+
+model Encounter {
+  id String @id @default(cuid())
+  patientId String
+  patient Patient @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  dateTime String
+  facility String @default("")
+  department String @default("")
+  doctor String @default("")
+  reason String @default("")
+  chiefComplaint String @default("")
+  symptoms String @default("")
+  vitals String @default("")
+  examFindings String @default("")
+  provisionalDx String @default("")
+  finalDx String @default("")
+  finalDxStatus FieldStatus @default(confirmed)
+  investigationsOrdered String @default("")
+  treatment String @default("")
+  procedures String @default("")
+  followUpDate String @default("")
+  notes String @default("")
+  outcome String @default("")
+  finalized Boolean @default(true)
+  createdBy String
+  createdAt DateTime @default(now())
+}
+
+model Investigation {
+  id String @id @default(cuid())
+  patientId String
+  patient Patient @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  type String
+  date String
+  source String @default("")
+  findings String @default("")
+  interpretation String @default("")
+  relatedDiagnosis String @default("")
+  orderedBy String @default("")
+  encounterId String @default("")
+  fileName String @default("")
+  fileDataUrl String @default("")
+  fileUrl String @default("") // S3 URL in production
+  createdBy String
+  createdAt DateTime @default(now())
+}
+
+model Surgery {
+  id String @id @default(cuid())
+  patientId String
+  patient Patient @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  procedureName String
+  date String @default("")
+  dateStatus FieldStatus @default(confirmed)
+  location String @default("")
+  reason String @default("")
+  surgeon String @default("")
+  preopFindings String @default("")
+  operativeNotes String @default("")
+  complications String @default("")
+  outcome String @default("")
+  createdBy String
+  createdAt DateTime @default(now())
+}
+
+model Allergy {
+  id String @id @default(cuid())
+  patientId String
+  patient Patient @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  substance String
+  reaction String @default("")
+  severity String @default("")
+  date String @default("")
+  dateStatus FieldStatus @default(not_remembered)
+  source String @default("patient-reported")
+  verification FieldStatus @default(pending_verification)
+  notes String @default("")
+  createdBy String
+  createdAt DateTime @default(now())
+}
+
+model FamilyHistory {
+  id String @id @default(cuid())
+  patientId String
+  patient Patient @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  relation String @default("")
+  condition String @default("")
+  onsetAge String @default("")
+  onsetStatus FieldStatus @default(unknown)
+  verification FieldStatus @default(pending_verification)
+  createdBy String
+  createdAt DateTime @default(now())
+}
+
+model Preventive {
+  id String @id @default(cuid())
+  patientId String
+  patient Patient @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  kind String @default("checkup")
+  title String
+  date String @default("")
+  dateStatus FieldStatus @default(confirmed)
+  details String @default("")
+  dueDate String @default("")
+  done Boolean @default(false)
+  createdBy String
+  createdAt DateTime @default(now())
+}
+
+model AuditLog {
+  id String @id @default(cuid())
+  patientId String
+  patient Patient @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  actor String
+  action String
+  entity String
+  entityId String
+  detail String @default("")
+  at DateTime @default(now())
+}
+
+model StaffUser {
+  id String @id @default(cuid())
+  username String @unique
+  displayName String
+  passwordHash String
+  role String @default("doctor") // doctor | nurse | reception | specialist | admin
+  active Boolean @default(true)
+  createdAt DateTime @default(now())
+}

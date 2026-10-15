@@ -1,0 +1,35 @@
+{
+  "name": "lifetime-medical-record-system",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Complete Lifetime Patient Medical Record & Intelligence System - ABDM-ready, responsive, Vercel-deployable",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "db:seed-admin": "node scripts/seed-admin.mjs",
+    "db:status": "node scripts/with-env.mjs migrate status",
+    "db:migrate": "node scripts/with-env.mjs migrate dev",
+    "db:deploy": "node scripts/with-env.mjs migrate deploy",
+    "db:studio": "node scripts/with-env.mjs studio",
+    "backup": "powershell -ExecutionPolicy Bypass -File scripts/backup.ps1"
+  },
+  "dependencies": {
+    "@prisma/client": "5.18.0",
+    "jose": "^6.2.12",
+    "next": "14.2.5",
+    "react": "18.3.1",
+    "react-dom": "18.3.1"
+  },
+  "devDependencies": {
+    "@types/node": "20.14.10",
+    "@types/react": "18.3.3",
+    "@types/react-dom": "18.3.0",
+    "autoprefixer": "10.4.19",
+    "postcss": "8.4.39",
+    "prisma": "5.18.0",
+    "tailwindcss": "3.4.6",
+    "typescript": "5.5.3"
+  }
+}

@@ -1,0 +1,8 @@
+node_modules/
+.next/
+out/
+dist/
+backups/
+.env
+.env*.local
+.vercel
