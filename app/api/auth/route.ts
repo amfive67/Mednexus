@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { getSession, signSession, sessionCookie, clearCookie } from "@/lib/auth";
 import { err, prisma } from "@/lib/db";
 

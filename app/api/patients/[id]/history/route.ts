@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { ALL_STAFF, CLINICAL, requireRole } from "@/lib/auth";
 import { err, logAudit, prisma } from "@/lib/db";
 

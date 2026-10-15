@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { err, prisma } from "@/lib/db";
 
 // First-run setup ONLY: creates the first doctor account when none exists.

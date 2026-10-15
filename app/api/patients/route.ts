@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { ALL_STAFF, coerceStatus, requireRole } from "@/lib/auth";
 import { err, logAudit, prisma } from "@/lib/db";
 import { validatePatientInput } from "@/lib/validate";

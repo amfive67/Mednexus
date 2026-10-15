@@ -4,6 +4,7 @@
   "private": true,
   "description": "Complete Lifetime Patient Medical Record & Intelligence System - ABDM-ready, responsive, Vercel-deployable",
   "scripts": {
+    "postinstall": "prisma generate",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
