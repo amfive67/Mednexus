@@ -53,9 +53,13 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
 
 export async function DELETE(req: Request, { params }: { params: { id: string } }) {
   try {
+    const pid = decodeURIComponent(params.id);
     const auth = await requireRole(req, ["doctor"]);
     if (auth instanceof Response) return auth;
-    return err("Patient deletion is disabled to protect lifetime records and audit trail. Contact admin to archive.", 403);
+    // Permanent removal (cascade clears linked records). Used for test/demo
+    // cleanup before handover; hospital policy should restrict this to corrections.
+    await prisma.patient.delete({ where: { id: pid } });
+    return Response.json({ ok: true });
   } catch (e) {
     return err(String(e));
   }

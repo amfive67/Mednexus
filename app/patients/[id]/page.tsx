@@ -175,7 +175,7 @@ async function saveColl(pid: string, coll: "encounters" | "conditions" | "medica
 }
 
 async function del(entity: string, id: string, onChange: () => void) {
-  if (!confirm("Delete? History preserved in audit log.")) return;
+  if (!confirm("Delete permanently? This removes the record and all data linked to it. This cannot be undone.")) return;
   await api.del(entity, id).catch((e: Error) => alert(e.message));
   onChange();
 }
