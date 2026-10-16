@@ -28,7 +28,7 @@ export default function DoctorLogin({ onDone }: { onDone: () => void }) {
           setErr("Unexpected server response. Please reload.");
         }
       })
-      .catch(() => setErr("Cannot reach server or database. Start PostgreSQL, check DATABASE_URL, restart with npm start, then reload."));
+      .catch(() => setErr("Cannot reach the server. Check your internet connection and reload the page."));
   }, []);
 
   const submit = async () => {
